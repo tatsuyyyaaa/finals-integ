@@ -19,14 +19,3 @@
         </v-card>
     </div>
 </template> 
-<script>
-export default {
-    layout: "auth",
-    middleware: "guest",
-    methods: {
-        signinWithGoogle(){
-            this.$auth.loginWith('google')
-        }
-    }
-}
-</script>
