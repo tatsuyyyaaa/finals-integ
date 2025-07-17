@@ -4,6 +4,9 @@ export default {
   // Basic SPA configuration
   ssr: false,
   target: 'static',
+  generate: {
+    dir: 'dist' // This will create files in /dist folder
+  },
 
   // Essential head tags
   head: {
