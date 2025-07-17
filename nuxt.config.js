@@ -1,21 +1,19 @@
-import colors from 'vuetify/es5/util/colors'
+import colors from 'vuetify/lib/util/colors'
 
 export default {
-  // Disable server-side rendering
+  // Disable server-side rendering (SPA mode)
   ssr: false,
+  target: 'static',
 
   // Global page headers
   head: {
-    titleTemplate: '%s - rbg-img-finals',
-    title: 'rbg-img-finals',
-    htmlAttrs: {
-      lang: 'en'
-    },
+    titleTemplate: '%s - My App',
+    title: 'My App',
+    htmlAttrs: { lang: 'en' },
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' },
-      { name: 'format-detection', content: 'telephone=no' }
+      { hid: 'description', name: 'description', content: 'My application description' }
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
@@ -24,10 +22,12 @@ export default {
 
   // Global CSS
   css: [
+    '~/assets/main.css'
   ],
 
   // Plugins
   plugins: [
+    '~/plugins/axios.js'
   ],
 
   // Auto import components
@@ -36,6 +36,7 @@ export default {
   // Build Modules
   buildModules: [
     '@nuxtjs/vuetify',
+    '@nuxtjs/dotenv'
   ],
 
   // Modules
@@ -48,11 +49,11 @@ export default {
   auth: {
     strategies: {
       google: {
-        clientId: '721612083479-irseivo0evhhj8jccvoq8bvdq6dhtupa.apps.googleusercontent.com',
+        clientId: process.env.GOOGLE_CLIENT_ID,
         codeChallengeMethod: '',
         responseType: 'code',
         endpoints: {
-          token: 'http://localhost:3000/auth/google/callback', // Update with your backend
+          token: `${process.env.API_BASE_URL}/auth/google/callback`,
           userInfo: 'https://www.googleapis.com/oauth2/v3/userinfo'
         },
         scope: ['openid', 'profile', 'email']
@@ -95,15 +96,6 @@ export default {
           warning: colors.amber.base,
           error: colors.deepOrange.accent4,
           success: colors.green.accent3
-        },
-        dark: {
-          primary: colors.blue.darken2,
-          accent: colors.grey.darken3,
-          secondary: colors.amber.darken3,
-          info: colors.teal.lighten1,
-          warning: colors.amber.base,
-          error: colors.deepOrange.accent4,
-          success: colors.green.accent3
         }
       }
     }
@@ -111,17 +103,18 @@ export default {
 
   // Build configuration
   build: {
+    transpile: ['vuetify']
   },
-
-  // Server middleware (if needed)
-  serverMiddleware: [
-    { path: '/api', handler: '~/server/api.js' }
-  ],
 
   // Environment variables
   publicRuntimeConfig: {
     axios: {
-      baseURL: process.env.BASE_URL || 'http://localhost:3000'
-    }
+      baseURL: process.env.API_BASE_URL || 'http://localhost:3000'
+    },
+    googleClientId: process.env.GOOGLE_CLIENT_ID
+  },
+
+  privateRuntimeConfig: {
+    apiSecret: process.env.API_SECRET
   }
 }
