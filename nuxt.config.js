@@ -12,8 +12,37 @@ export default {
   publicRuntimeConfig: {
     baseURL: process.env.BASE_URL || 'https://finals-integ-4bta.vercel.app',
     removeBgApiKey: process.env.REMOVEBG_API_KEY,
+    googleClientId: process.env.GOOGLE_CLIENT_ID,
     axios: {
       baseURL: process.env.BASE_URL || 'https://finals-integ-4bta.vercel.app'
+    }
+  },
+
+  router: {
+    middleware: ['auth']
+  },
+
+  auth: {
+    redirect: {
+      login: '/auth/signin',
+      callback: '/auth/callback', 
+      home: '/'
+    },
+    strategies: {
+      google: {
+        clientId: process.env.GOOGLE_CLIENT_ID,  // Changed from client_id
+        codeChallengeMethod: '',
+        responseType: 'code',
+        redirectUri: process.env.GOOGLE_REDIRECT_URI === 'production'
+          ? 'https://finals-integ-4bta.vercel.app/auth/callback'
+          : 'http://localhost:3000/auth/callback',
+        scope: ['openid', 'profile', 'email'],
+        endpoints: {
+          authorization: 'https://accounts.google.com/o/oauth2/v2/auth',
+          token: 'https://oauth2.googleapis.com/token',  // Fixed Google endpoint
+          userInfo: 'https://www.googleapis.com/oauth2/v3/userinfo'  // Fixed endpoint
+        }
+      }
     }
   },
 
@@ -65,7 +94,8 @@ export default {
   ],
 
   modules: [
-    '@nuxtjs/axios'
+    '@nuxtjs/axios',
+    '@nuxtjs/auth-next'
   ],
 
   vuetify: {
