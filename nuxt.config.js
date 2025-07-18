@@ -1,45 +1,105 @@
-import colors from 'vuetify/lib/util/colors'
+import colors from 'vuetify/es5/util/colors'
 
 export default {
-  // Basic SPA configuration
   ssr: false,
   target: 'static',
-  generate: {
-    dir: 'dist' // This will create files in /dist folder
+
+  server: {
+    host: process.env.NODE_ENV === 'production' ? '0' : 'localhost',
+    port: process.env.PORT || 3000
   },
 
-  // Essential head tags
-  head: {
-    title: 'My App',
-    meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' }
-    ],
-    link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
-    ]
-  },
-
-  // Vuetify module only
-  buildModules: [
-    '@nuxtjs/vuetify'
-  ],
-
-  // Simple Vuetify theme
-  vuetify: {
-    theme: {
-      themes: {
-        light: {
-          primary: colors.blue.darken2,
-          secondary: colors.amber.darken3,
-          error: colors.red.accent3
-        }
-      }
+  publicRuntimeConfig: {
+    baseURL: process.env.BASE_URL || 'https://finals-integ-4bta.vercel.app',
+    removeBgApiKey: process.env.REMOVEBG_API_KEY,
+    axios: {
+      baseURL: process.env.BASE_URL || 'https://finals-integ-4bta.vercel.app'
     }
   },
 
-  // Basic build config
+  head: {
+    titleTemplate: '%s - BG Remover Tool',
+    title: 'Background Remover Tool',
+    htmlAttrs: { lang: 'en' },
+    meta: [
+      { charset: 'utf-8' },
+      {
+        name: 'viewport',
+        content: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no'
+      },
+      { 
+        hid: 'description', 
+        name: 'description', 
+        content: 'Remove image backgrounds instantly using AI technology' 
+      }
+    ],
+    link: [
+      { 
+        rel: 'icon', 
+        type: 'image/x-icon', 
+        href: '/favicon.ico' 
+      },
+      {
+        rel: 'stylesheet',
+        href: 'https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap'
+      }
+    ]
+  },
+
+  css: [
+    'vuetify/dist/vuetify.min.css'
+  ],
+
+  plugins: [
+    { 
+      src: '~/plugins/removeBgApi.client.js', 
+      mode: 'client' 
+    }
+  ],
+
+  components: true,
+
+  buildModules: [
+    '@nuxtjs/vuetify',
+    '@nuxtjs/dotenv'
+  ],
+
+  modules: [
+    '@nuxtjs/axios'
+  ],
+
+  vuetify: {
+    theme: {
+      dark: true,
+      themes: {
+        dark: {
+          primary: colors.blue.darken2,
+          accent: colors.grey.darken3,
+          secondary: colors.amber.darken3,
+          error: colors.red.accent3,
+          success: colors.green.accent3
+        }
+      }
+    },
+    defaultAssets: {
+      font: true,
+      icons: 'mdi'
+    }
+  },
+
   build: {
-    transpile: ['vuetify']
+    transpile: ['vuetify'],
+    postcss: {
+      postcssOptions: {
+        plugins: {
+          'postcss-preset-env': { 
+            stage: 3,
+            features: {
+              'nesting-rules': true
+            } 
+          }
+        }
+      }
+    }
   }
 }
