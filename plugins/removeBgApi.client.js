@@ -1,4 +1,4 @@
-export default ({ $axios, $config }, inject) => {
+export default ({ $axios }, inject) => {
   const removeBg = async (imageFile) => {
     const formData = new FormData();
     formData.append('image_file', imageFile);
@@ -10,7 +10,8 @@ export default ({ $axios, $config }, inject) => {
         formData,
         {
           headers: {
-            'X-Api-Key': $config.removeBgApiKey,
+            // ✅ Directly include your API key here
+            'X-Api-Key': 'P4At48TEFkGFNsTwKozJF6Q1',
             'Content-Type': 'multipart/form-data'
           },
           responseType: 'blob'
