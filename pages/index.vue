@@ -1,48 +1,33 @@
 <template>
   <v-container>
-    <!-- Auth Check -->
-    <v-alert
-      v-if="!$auth.loggedIn"
-      type="warning"
-      class="mb-6 d-flex align-center justify-space-between"
-    >
-      <div>Please sign in to use the background remover.</div>
-      <v-btn color="primary" @click="$auth.loginWith('google')">Sign In</v-btn>
-    </v-alert>
-
-    <!-- Main Content -->
-    <v-card :disabled="!$auth.loggedIn" class="pa-4" elevation="2">
+    <v-card class="pa-4" elevation="2">
       <v-card-title>
         <h3 class="text-h6 font-weight-bold">Upload Image</h3>
       </v-card-title>
 
       <v-card-text>
-        <!-- File Upload -->
         <v-file-input
           v-model="imageFile"
           accept="image/*"
           label="Select image"
           prepend-icon="mdi-camera"
           :loading="loading"
-          :disabled="!$auth.loggedIn"
           @change="processImage"
-          :rules="[v => !v || v.size < 5000000 || 'Image size should be less than 5 MB']"
+          :rules="[v => !v || v.size < 8000000 || 'Image size should be less than 8 MB']"
         ></v-file-input>
 
-        <!-- Progress bar -->
         <v-progress-linear
           v-if="loading"
           indeterminate
           color="primary"
           class="mb-4"
-        ></v-progress-linear>
+        />
 
-        <!-- Image Comparison -->
         <v-row v-if="imageFile || resultImage" class="my-6">
           <v-col cols="12" md="6">
             <h4 class="mb-2">Original Image</h4>
             <v-img
-              v-if="imageFile"
+              v-if="originalImageUrl"
               :src="originalImageUrl"
               max-height="400"
               contain
@@ -51,7 +36,7 @@
           </v-col>
 
           <v-col cols="12" md="6">
-            <h4 class="mb-2">Result Image (Background Removed)</h4>
+            <h4 class="mb-2">Background Removed</h4>
             <v-img
               v-if="resultImage"
               :src="resultImage"
@@ -59,13 +44,9 @@
               contain
               class="rounded"
             />
-            <div v-else class="grey--text text-caption mt-4">
-              No processed image yet.
-            </div>
           </v-col>
         </v-row>
 
-        <!-- Action Buttons -->
         <div class="d-flex flex-wrap gap-2 mt-4">
           <v-btn
             v-if="resultImage"
@@ -87,7 +68,6 @@
           </v-btn>
         </div>
 
-        <!-- Error Display -->
         <v-alert
           v-if="error"
           type="error"
@@ -102,8 +82,6 @@
 
 <script>
 export default {
-  middleware: 'auth',
-
   data: () => ({
     imageFile: null,
     resultImage: null,
@@ -115,27 +93,14 @@ export default {
   methods: {
     async processImage(file) {
       if (!file) return;
-
       this.loading = true;
       this.error = null;
       this.originalImageUrl = URL.createObjectURL(file);
 
       try {
-        const formData = new FormData();
-        formData.append('image_file', file);
-
-        const result = await this.$axios.post('/remove-bg', formData, {
-          headers: {
-            Authorization: `Bearer ${this.$auth.token}`,
-            'Content-Type': 'multipart/form-data'
-          },
-          responseType: 'blob'
-        });
-
-        this.resultImage = URL.createObjectURL(result.data);
+        this.resultImage = await this.$removeBg(file); // 🔥 uses your plugin
       } catch (err) {
-        this.error = err.response?.data?.error || 'Failed to remove background';
-        console.error('Background removal error:', err);
+        this.error = err.message || 'Failed to remove background';
       } finally {
         this.loading = false;
       }
