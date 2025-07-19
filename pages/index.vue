@@ -1,16 +1,20 @@
 <template>
   <v-container fluid class="light-bg py-12">
     <v-card class="mx-auto pa-8 rounded-xl" max-width="840" elevation="6">
+      <!-- Title -->
       <v-card-title class="justify-center">
         <div class="text-center w-100">
-          <v-icon size="40" color="blue darken-2">mdi-image-remove</v-icon>
+          <v-icon size="42" color="primary">mdi-image-remove</v-icon>
           <h2 class="font-weight-bold mt-2 mb-1">Background Remover Tool</h2>
-          <p class="text-subtitle-2 grey--text">Upload your image and remove the background instantly</p>
+          <p class="text-subtitle-2 grey--text">
+            Upload your image and remove the background instantly
+          </p>
         </div>
       </v-card-title>
 
+      <!-- Body -->
       <v-card-text>
-        <!-- Image Upload -->
+        <!-- Upload Input -->
         <v-file-input
           v-model="imageFile"
           accept="image/*"
@@ -25,11 +29,11 @@
           class="mb-6"
         />
 
-        <!-- Loading Spinner -->
+        <!-- Loading Indicator -->
         <v-progress-linear
           v-if="loading"
           indeterminate
-          color="blue darken-2"
+          color="primary"
           class="mb-4"
         />
 
@@ -47,7 +51,7 @@
           </v-col>
 
           <v-col cols="12" md="6">
-            <h4 class="subtitle-1 font-weight-bold mb-2 text-center">Background Removed</h4>
+            <h4 class="subtitle-1 font-weight-bold mb-2 text-center">No Background</h4>
             <v-img
               v-if="resultImage"
               :src="resultImage"
@@ -60,11 +64,28 @@
 
         <!-- Action Buttons -->
         <div v-if="resultImage" class="text-center mt-4">
-          <v-btn color="blue darken-2" dark class="mx-2" @click="downloadImage">
+          <v-btn
+            color="primary"
+            class="mx-2"
+            @click="downloadImage"
+            :loading="loading"
+            depressed
+            rounded
+            elevation="2"
+          >
             <v-icon left>mdi-download</v-icon>
             Download
           </v-btn>
-          <v-btn color="grey lighten-1" dark class="mx-2" @click="reset">
+
+          <v-btn
+            color="grey lighten-1"
+            class="mx-2"
+            @click="reset"
+            :disabled="loading"
+            depressed
+            rounded
+            elevation="2"
+          >
             <v-icon left>mdi-refresh</v-icon>
             Try Another
           </v-btn>
@@ -93,15 +114,15 @@ export default {
 
   methods: {
     async processImage(file) {
-      if (!file) return;
+      if (!file) return
 
-      this.loading = true;
-      this.error = null;
-      this.originalImageUrl = URL.createObjectURL(file);
+      this.loading = true
+      this.error = null
+      this.originalImageUrl = URL.createObjectURL(file)
 
-      const formData = new FormData();
-      formData.append('image_file', file);
-      formData.append('size', 'auto');
+      const formData = new FormData()
+      formData.append('image_file', file)
+      formData.append('size', 'auto')
 
       try {
         const response = await axios.post(
@@ -109,37 +130,37 @@ export default {
           formData,
           {
             headers: {
-              'X-Api-Key': 'P4At48TEFkGFNsTwKozJF6Q1',
+              'X-Api-Key': 'P4At48TEFkGFNsTwKozJF6Q1', // Replace with your API key
               'Content-Type': 'multipart/form-data'
             },
             responseType: 'blob'
           }
-        );
+        )
 
-        this.resultImage = URL.createObjectURL(response.data);
+        this.resultImage = URL.createObjectURL(response.data)
       } catch (err) {
         this.error =
           err.response?.data?.errors?.[0]?.title ||
           err.response?.data?.message ||
-          err.message;
-        console.error('[Remove.bg Error]', err);
+          err.message
+        console.error('[Remove.bg Error]', err)
       } finally {
-        this.loading = false;
+        this.loading = false
       }
     },
 
     downloadImage() {
-      const link = document.createElement('a');
-      link.href = this.resultImage;
-      link.download = `no-bg-${Date.now()}.png`;
-      link.click();
+      const link = document.createElement('a')
+      link.href = this.resultImage
+      link.download = `no-bg-${Date.now()}.png`
+      link.click()
     },
 
     reset() {
-      this.imageFile = null;
-      this.originalImageUrl = null;
-      this.resultImage = null;
-      this.error = null;
+      this.imageFile = null
+      this.originalImageUrl = null
+      this.resultImage = null
+      this.error = null
     }
   }
 }
@@ -147,9 +168,8 @@ export default {
 
 <style scoped>
 .light-bg {
-  background: linear-gradient(to bottom, #f4f7fb, #ffffff);
+  background: linear-gradient(to bottom, #f6f9fc, #ffffff);
 }
-
 .v-card-title h2 {
   font-family: 'Segoe UI', sans-serif;
 }
