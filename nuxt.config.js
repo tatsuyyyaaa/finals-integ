@@ -8,9 +8,15 @@ export default {
     port: process.env.PORT || 3000
   },
 
+  // ✅ Add this block for server-side API route
+  serverMiddleware: [
+    { path: '/api/remove-bg', handler: '~/server-middleware/remove-bg.js' }
+  ],
+
   publicRuntimeConfig: {
     baseURL: process.env.BASE_URL || 'https://finals-integ-4bta.vercel.app',
-    googleRedirectUri: process.env.GOOGLE_REDIRECT_URI
+    googleRedirectUri: process.env.GOOGLE_REDIRECT_URI,
+    removeBgApiKey: process.env.REMOVE_BG_API_KEY
   },
 
   auth: {
