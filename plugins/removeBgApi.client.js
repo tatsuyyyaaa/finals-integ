@@ -4,9 +4,6 @@ export default ({ $axios, $config }, inject) => {
     formData.append('image_file', imageFile);
     formData.append('size', 'auto');
 
-    console.log('[removeBg] API Key:', $config.removeBgApiKey);
-    console.log('[removeBg] File:', imageFile?.name, imageFile?.size);
-
     try {
       const response = await $axios.post(
         'https://api.remove.bg/v1.0/removebg',
@@ -22,15 +19,13 @@ export default ({ $axios, $config }, inject) => {
 
       return URL.createObjectURL(response.data);
     } catch (error) {
-      console.error('[removeBg] Full error:', error.response?.data || error);
-
       const errorMessage =
         error?.response?.data?.errors?.[0]?.title ||
         error?.response?.data?.message ||
         error?.message ||
         'Unknown error';
 
-      throw new Error(`❌ Background removal failed: ${errorMessage}`);
+      throw new Error(`Background removal failed: ${errorMessage}`);
     }
   };
 

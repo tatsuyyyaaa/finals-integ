@@ -66,20 +66,11 @@ export default {
       this.error = null;
 
       try {
-        const formData = new FormData();
-        formData.append('image_file', file);
-
-        const response = await this.$axios.post('/api/remove-bg', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          },
-          responseType: 'blob'
-        });
-
-        this.result = URL.createObjectURL(response.data);
+        // Call the working plugin method (uses Remove.bg API)
+        this.result = await this.$removeBg(file);
       } catch (err) {
-        this.error = `Failed to remove background: ${err.response?.data?.error || err.message}`;
-        console.error('API Error:', err);
+        this.error = err.message || 'Failed to remove background';
+        console.error('Background Removal Error:', err);
       } finally {
         this.loading = false;
       }
