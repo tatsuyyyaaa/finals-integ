@@ -2,7 +2,6 @@ import colors from 'vuetify/lib/util/colors'
 
 export default {
   ssr: false,
-  target: 'static',
 
   server: {
     host: process.env.NODE_ENV === 'production' ? '0' : 'localhost',
@@ -11,15 +10,7 @@ export default {
 
   publicRuntimeConfig: {
     baseURL: process.env.BASE_URL || 'https://finals-integ-4bta.vercel.app',
-    removeBgApiKey: process.env.REMOVEBG_API_KEY,
-    googleClientId: process.env.GOOGLE_CLIENT_ID,
-    axios: {
-      baseURL: process.env.BASE_URL || 'https://finals-integ-4bta.vercel.app'
-    }
-  },
-
-  router: {
-    middleware: ['auth']
+    googleRedirectUri: process.env.GOOGLE_REDIRECT_URI
   },
 
   auth: {
@@ -38,30 +29,22 @@ export default {
     autoFetchUser: true,
     strategies: {
       google: {
-        scheme: 'oauth2',
         clientId: process.env.GOOGLE_CLIENT_ID,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        redirectUri:
-          process.env.NODE_ENV === 'production'
-            ? 'https://finals-integ-4bta.vercel.app/auth/callback'
-            : 'http://localhost:3000/auth/callback',
-        responseType: 'code',
-        codeChallengeMethod: 'S256', // ✅ REQUIRED for PKCE
-        token: {
-          property: 'access_token',
-          type: 'Bearer',
-          maxAge: 1800
-        },
-        user: {
-          property: false
-        },
+        redirectUri: process.env.GOOGLE_REDIRECT_URI,
+        scheme: "oauth2",
         endpoints: {
-          authorization: 'https://accounts.google.com/o/oauth2/v2/auth',
-          token: 'https://oauth2.googleapis.com/token',
-          userInfo: 'https://www.googleapis.com/oauth2/v3/userinfo'
+          authorization: "https://accounts.google.com/o/oauth2/auth",
+          userInfo: "https://www.googleapis.com/oauth2/v3/userinfo",
         },
-        scope: ['openid', 'profile', 'email']
-      }
+        token: {
+          property: "access_token",
+          type: "Bearer",
+          maxAge: 1800,
+        },
+        responseType: "token id_token",
+        scope: ["openid", "profile", "email"],
+        codeChallengeMethod: "",
+      },
     }
   },
 

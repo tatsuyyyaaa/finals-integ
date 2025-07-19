@@ -7,20 +7,19 @@
       class="mb-6"
     >
       Please sign in to use the background remover.
+      <v-btn
+        color="primary"
+        class="ml-4"
+        @click="$auth.loginWith('google')"
+      >
+        Sign In
+      </v-btn>
     </v-alert>
 
     <!-- Main Content -->
     <v-card :disabled="!$auth.loggedIn">
       <v-card-title class="d-flex justify-space-between">
         <span>Upload Image</span>
-        <v-btn
-          v-if="$auth.loggedIn"
-          color="red"
-          text
-          @click="$auth.logout()"
-        >
-          Sign Out
-        </v-btn>
       </v-card-title>
 
       <v-card-text>
@@ -99,7 +98,6 @@ export default {
       this.error = null;
       
       try {
-        // Use remove.bg API via your plugin
         const formData = new FormData();
         formData.append('image_file', file);
         
