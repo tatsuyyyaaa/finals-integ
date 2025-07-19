@@ -21,12 +21,24 @@
 </template>
 <script>
 export default {
-    layout: "auth",
-    middleware: "guest",
-    methods: {
-        signinWithGoogle(){
-            this.$auth.loginWith('google')
-        }
+  layout: 'auth',
+  middleware: 'guest',
+  data() {
+    return {
+      name: '',
+      email: ''
     }
+  },
+  mounted() {
+    // If already logged in (e.g. returned from Google login), go to home
+    if (this.$auth.loggedIn) {
+      this.$router.push('/')
+    }
+  },
+  methods: {
+    signinWithGoogle() {
+      this.$auth.loginWith('google')
+    }
+  }
 }
 </script>

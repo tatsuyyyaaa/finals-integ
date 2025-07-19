@@ -1,11 +1,11 @@
-import colors from 'vuetify/es5/util/colors'
+import colors from 'vuetify/lib/util/colors'
 
 export default {
   ssr: false,
   target: 'static',
 
   server: {
-    host: process.env.NODE_ENV === 'production' ? '0' : 'localhost',
+    host: 'localhost',
     port: process.env.PORT || 3000
   },
 
@@ -25,12 +25,25 @@ export default {
   auth: {
     redirect: {
       login: '/auth/signin',
-      callback: '/auth/callback', 
+      callback: '/auth/callback',
       home: '/'
+    },
+    watchLoggedIn: true,
+    rewriteRedirects: true,
+    fullPathRedirect: true,
+    localStorage: {
+      prefix: 'auth.'
+    },
+    cookie: {
+      prefix: 'auth.',
+      options: {
+        path: '/',
+        secure: process.env.NODE_ENV === 'production'
+      }
     },
     strategies: {
       google: {
-        clientId: process.env.GOOGLE_CLIENT_ID,  // Changed from client_id
+        clientId: process.env.GOOGLE_CLIENT_ID,
         codeChallengeMethod: '',
         responseType: 'code',
         redirectUri: process.env.NODE_ENV === 'production'
@@ -39,8 +52,8 @@ export default {
         scope: ['openid', 'profile', 'email'],
         endpoints: {
           authorization: 'https://accounts.google.com/o/oauth2/v2/auth',
-          token: 'https://oauth2.googleapis.com/token',  // Fixed Google endpoint
-          userInfo: 'https://www.googleapis.com/oauth2/v3/userinfo'  // Fixed endpoint
+          token: 'https://oauth2.googleapis.com/token',
+          userInfo: 'https://www.googleapis.com/oauth2/v3/userinfo'
         }
       }
     }
@@ -56,17 +69,17 @@ export default {
         name: 'viewport',
         content: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no'
       },
-      { 
-        hid: 'description', 
-        name: 'description', 
-        content: 'Remove image backgrounds instantly using AI technology' 
+      {
+        hid: 'description',
+        name: 'description',
+        content: 'Remove image backgrounds instantly using AI technology'
       }
     ],
     link: [
-      { 
-        rel: 'icon', 
-        type: 'image/x-icon', 
-        href: '/favicon.ico' 
+      {
+        rel: 'icon',
+        type: 'image/x-icon',
+        href: '/favicon.ico'
       },
       {
         rel: 'stylesheet',
@@ -80,9 +93,9 @@ export default {
   ],
 
   plugins: [
-    { 
-      src: '~/plugins/removeBgApi.client.js', 
-      mode: 'client' 
+    {
+      src: '~/plugins/removeBgApi.client.js',
+      mode: 'client'
     }
   ],
 
@@ -122,11 +135,11 @@ export default {
     postcss: {
       postcssOptions: {
         plugins: {
-          'postcss-preset-env': { 
+          'postcss-preset-env': {
             stage: 3,
             features: {
               'nesting-rules': true
-            } 
+            }
           }
         }
       }
