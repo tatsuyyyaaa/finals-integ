@@ -5,7 +5,7 @@ export default {
   target: 'static',
 
   server: {
-    host: 'localhost',
+    host: process.env.NODE_ENV === 'production' ? '0' : 'localhost',
     port: process.env.PORT || 3000
   },
 
@@ -25,36 +25,42 @@ export default {
   auth: {
     redirect: {
       login: '/auth/signin',
+      logout: '/auth/signin',
       callback: '/auth/callback',
       home: '/'
     },
-    watchLoggedIn: true,
-    rewriteRedirects: true,
-    fullPathRedirect: true,
-    localStorage: {
-      prefix: 'auth.'
-    },
     cookie: {
-      prefix: 'auth.',
       options: {
-        path: '/',
-        secure: process.env.NODE_ENV === 'production'
+        secure: true,
+        domain: '.vercel.app'
       }
     },
+    autoFetchUser: true,
     strategies: {
       google: {
+        scheme: 'oauth2',
         clientId: process.env.GOOGLE_CLIENT_ID,
-        codeChallengeMethod: '',
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        redirectUri:
+          process.env.NODE_ENV === 'production'
+            ? 'https://finals-integ-4bta.vercel.app/auth/callback'
+            : 'http://localhost:3000/auth/callback',
         responseType: 'code',
-        redirectUri: process.env.NODE_ENV === 'production'
-          ? 'https://finals-integ-4bta.vercel.app/auth/callback'
-          : 'http://localhost:3000/auth/callback',
-        scope: ['openid', 'profile', 'email'],
+        codeChallengeMethod: 'S256', // ✅ REQUIRED for PKCE
+        token: {
+          property: 'access_token',
+          type: 'Bearer',
+          maxAge: 1800
+        },
+        user: {
+          property: false
+        },
         endpoints: {
           authorization: 'https://accounts.google.com/o/oauth2/v2/auth',
           token: 'https://oauth2.googleapis.com/token',
           userInfo: 'https://www.googleapis.com/oauth2/v3/userinfo'
-        }
+        },
+        scope: ['openid', 'profile', 'email']
       }
     }
   },
@@ -76,11 +82,7 @@ export default {
       }
     ],
     link: [
-      {
-        rel: 'icon',
-        type: 'image/x-icon',
-        href: '/favicon.ico'
-      },
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
       {
         rel: 'stylesheet',
         href: 'https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap'
@@ -88,9 +90,7 @@ export default {
     ]
   },
 
-  css: [
-    'vuetify/dist/vuetify.min.css'
-  ],
+  css: [],
 
   plugins: [
     {
