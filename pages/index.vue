@@ -4,22 +4,16 @@
     <v-alert
       v-if="!$auth.loggedIn"
       type="warning"
-      class="mb-6"
+      class="mb-6 d-flex align-center justify-space-between"
     >
-      Please sign in to use the background remover.
-      <v-btn
-        color="primary"
-        class="ml-4"
-        @click="$auth.loginWith('google')"
-      >
-        Sign In
-      </v-btn>
+      <div>Please sign in to use the background remover.</div>
+      <v-btn color="primary" @click="$auth.loginWith('google')">Sign In</v-btn>
     </v-alert>
 
     <!-- Main Content -->
-    <v-card :disabled="!$auth.loggedIn">
-      <v-card-title class="d-flex justify-space-between">
-        <span>Upload Image</span>
+    <v-card :disabled="!$auth.loggedIn" class="pa-4" elevation="2">
+      <v-card-title>
+        <h3 class="text-h6 font-weight-bold">Upload Image</h3>
       </v-card-title>
 
       <v-card-text>
@@ -35,17 +29,44 @@
           :rules="[v => !v || v.size < 5000000 || 'Image size should be less than 5 MB']"
         ></v-file-input>
 
-        <!-- Preview/Result -->
-        <v-img
-          v-if="resultImage"
-          :src="resultImage"
-          max-height="500"
-          contain
+        <!-- Progress bar -->
+        <v-progress-linear
+          v-if="loading"
+          indeterminate
+          color="primary"
           class="mb-4"
-        ></v-img>
+        ></v-progress-linear>
+
+        <!-- Image Comparison -->
+        <v-row v-if="imageFile || resultImage" class="my-6">
+          <v-col cols="12" md="6">
+            <h4 class="mb-2">Original Image</h4>
+            <v-img
+              v-if="imageFile"
+              :src="originalImageUrl"
+              max-height="400"
+              contain
+              class="rounded"
+            />
+          </v-col>
+
+          <v-col cols="12" md="6">
+            <h4 class="mb-2">Result Image (Background Removed)</h4>
+            <v-img
+              v-if="resultImage"
+              :src="resultImage"
+              max-height="400"
+              contain
+              class="rounded"
+            />
+            <div v-else class="grey--text text-caption mt-4">
+              No processed image yet.
+            </div>
+          </v-col>
+        </v-row>
 
         <!-- Action Buttons -->
-        <div class="d-flex flex-wrap gap-2">
+        <div class="d-flex flex-wrap gap-2 mt-4">
           <v-btn
             v-if="resultImage"
             color="primary"
@@ -82,10 +103,11 @@
 <script>
 export default {
   middleware: 'auth',
-  
+
   data: () => ({
     imageFile: null,
     resultImage: null,
+    originalImageUrl: null,
     loading: false,
     error: null
   }),
@@ -93,22 +115,23 @@ export default {
   methods: {
     async processImage(file) {
       if (!file) return;
-      
+
       this.loading = true;
       this.error = null;
-      
+      this.originalImageUrl = URL.createObjectURL(file);
+
       try {
         const formData = new FormData();
         formData.append('image_file', file);
-        
+
         const result = await this.$axios.post('/remove-bg', formData, {
           headers: {
-            'Authorization': `Bearer ${this.$auth.token}`,
+            Authorization: `Bearer ${this.$auth.token}`,
             'Content-Type': 'multipart/form-data'
           },
           responseType: 'blob'
         });
-        
+
         this.resultImage = URL.createObjectURL(result.data);
       } catch (err) {
         this.error = err.response?.data?.error || 'Failed to remove background';
@@ -130,10 +153,11 @@ export default {
     reset() {
       this.imageFile = null;
       this.resultImage = null;
+      this.originalImageUrl = null;
       this.error = null;
     }
   }
-}
+};
 </script>
 
 <style scoped>
