@@ -1,35 +1,48 @@
 <template>
-  <div class="d-flex align-center justify-center" style="height: 100vh;">
-    <v-card width="500">
+  <v-container fluid class="fill-height d-flex align-center justify-center light-bg">
+    <v-card class="pa-8 rounded-xl" max-width="480" elevation="6">
       <v-card-text>
-        <h1 class="text-center my-8">Login Page</h1>
+        <div class="text-center mb-6">
+          <v-icon size="48" color="blue darken-2">mdi-lock</v-icon>
+          <h2 class="font-weight-bold mt-2">Welcome Back</h2>
+          <p class="text-subtitle-1 text--secondary">Sign in to your account</p>
+        </div>
+
         <v-form>
           <v-text-field
             v-model="name"
             label="Username"
-            rounded
             outlined
+            dense
+            rounded
             prepend-icon="mdi-account"
+            class="mb-4"
           />
+
           <v-text-field
             v-model="email"
             label="Password"
             type="password"
-            rounded
             outlined
+            dense
+            rounded
             prepend-icon="mdi-lock"
+            class="mb-4"
           />
-          <v-btn color="blue" rounded block>
+
+          <v-btn color="blue darken-2" dark block rounded class="mb-4">
             Login
           </v-btn>
-          <div class="mx-3 my-3 d-flex align-center justify-center">OR</div>
-          <v-btn color="green" @click="signinWithGoogle" class="text-capitalize" rounded block>
-            <v-icon left>mdi-google</v-icon> Sign in With Google
+
+          <div class="text-center grey--text my-2">or</div>
+
+          <v-btn color="red darken-1" dark @click="signinWithGoogle" block rounded>
+            <v-icon left>mdi-google</v-icon> Sign in with Google
           </v-btn>
         </v-form>
       </v-card-text>
     </v-card>
-  </div>
+  </v-container>
 </template>
 
 <script>
@@ -49,3 +62,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.light-bg {
+  background: linear-gradient(to bottom, #f9fafc, #eaeff5);
+}
+</style>

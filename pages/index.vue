@@ -1,8 +1,12 @@
 <template>
-  <v-container class="py-12">
-    <v-card class="mx-auto pa-6" max-width="800" elevation="4">
-      <v-card-title class="headline font-weight-bold justify-center">
-        Background Remover Tool
+  <v-container fluid class="light-bg py-12">
+    <v-card class="mx-auto pa-8 rounded-xl" max-width="840" elevation="6">
+      <v-card-title class="justify-center">
+        <div class="text-center w-100">
+          <v-icon size="40" color="blue darken-2">mdi-image-remove</v-icon>
+          <h2 class="font-weight-bold mt-2 mb-1">Background Remover Tool</h2>
+          <p class="text-subtitle-2 grey--text">Upload your image and remove the background instantly</p>
+        </div>
       </v-card-title>
 
       <v-card-text>
@@ -16,55 +20,57 @@
           @change="processImage"
           :rules="[v => !v || v.size < 8 * 1024 * 1024 || 'Max 8MB']"
           outlined
+          rounded
           dense
+          class="mb-6"
         />
 
         <!-- Loading Spinner -->
         <v-progress-linear
           v-if="loading"
           indeterminate
-          color="primary"
+          color="blue darken-2"
           class="mb-4"
         />
 
-        <!-- Image Preview -->
+        <!-- Image Comparison -->
         <v-row v-if="originalImageUrl || resultImage" class="my-6" dense>
           <v-col cols="12" md="6">
-            <h4 class="subtitle-1 font-weight-bold mb-2 text-center">Original</h4>
+            <h4 class="subtitle-1 font-weight-bold mb-2 text-center">Original Image</h4>
             <v-img
               v-if="originalImageUrl"
               :src="originalImageUrl"
-              class="rounded-lg"
+              class="rounded-lg elevation-2"
               max-height="300"
               contain
             />
           </v-col>
 
           <v-col cols="12" md="6">
-            <h4 class="subtitle-1 font-weight-bold mb-2 text-center">No Background</h4>
+            <h4 class="subtitle-1 font-weight-bold mb-2 text-center">Background Removed</h4>
             <v-img
               v-if="resultImage"
               :src="resultImage"
-              class="rounded-lg"
+              class="rounded-lg elevation-2"
               max-height="300"
               contain
             />
           </v-col>
         </v-row>
 
-        <!-- Actions -->
+        <!-- Action Buttons -->
         <div v-if="resultImage" class="text-center mt-4">
-          <v-btn color="primary" class="mx-2" @click="downloadImage">
+          <v-btn color="blue darken-2" dark class="mx-2" @click="downloadImage">
             <v-icon left>mdi-download</v-icon>
             Download
           </v-btn>
-          <v-btn color="secondary" class="mx-2" @click="reset">
+          <v-btn color="grey lighten-1" dark class="mx-2" @click="reset">
             <v-icon left>mdi-refresh</v-icon>
             Try Another
           </v-btn>
         </div>
 
-        <!-- Error Message -->
+        <!-- Error Alert -->
         <v-alert v-if="error" type="error" class="mt-4" dismissible>
           {{ error }}
         </v-alert>
@@ -103,7 +109,7 @@ export default {
           formData,
           {
             headers: {
-              'X-Api-Key': 'P4At48TEFkGFNsTwKozJF6Q1', // Replace with your working API key
+              'X-Api-Key': 'P4At48TEFkGFNsTwKozJF6Q1',
               'Content-Type': 'multipart/form-data'
             },
             responseType: 'blob'
@@ -140,7 +146,11 @@ export default {
 </script>
 
 <style scoped>
-.v-card-title {
+.light-bg {
+  background: linear-gradient(to bottom, #f4f7fb, #ffffff);
+}
+
+.v-card-title h2 {
   font-family: 'Segoe UI', sans-serif;
 }
 </style>
