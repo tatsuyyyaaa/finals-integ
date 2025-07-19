@@ -33,7 +33,7 @@ export default {
         clientId: process.env.GOOGLE_CLIENT_ID,  // Changed from client_id
         codeChallengeMethod: '',
         responseType: 'code',
-        redirectUri: process.env.GOOGLE_REDIRECT_URI === 'production'
+        redirectUri: process.env.NODE_ENV === 'production'
           ? 'https://finals-integ-4bta.vercel.app/auth/callback'
           : 'http://localhost:3000/auth/callback',
         scope: ['openid', 'profile', 'email'],
