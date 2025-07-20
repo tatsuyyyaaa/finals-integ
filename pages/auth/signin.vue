@@ -36,15 +36,26 @@
 
           <div class="text-center grey--text my-2">or</div>
 
-          <v-btn color="red darken-1" dark @click="signinWithGoogle" block rounded>
-            <v-icon left>mdi-google</v-icon> Sign in with Google
-          </v-btn>
+          <!-- Social Login Buttons Row -->
+          <v-row dense class="mt-4">
+            <v-col cols="6">
+              <v-btn color="red darken-1" dark block rounded @click="signinWithGoogle">
+                <v-icon left>mdi-google</v-icon>
+                Google
+              </v-btn>
+            </v-col>
+            <v-col cols="6">
+              <v-btn color="indigo darken-4" dark block rounded @click="signinWithFacebook">
+                <v-icon left>mdi-facebook</v-icon>
+                Facebook
+              </v-btn>
+            </v-col>
+          </v-row>
         </v-form>
       </v-card-text>
     </v-card>
   </v-container>
 </template>
-
 <script>
 export default {
   layout: 'auth',
@@ -58,13 +69,10 @@ export default {
   methods: {
     signinWithGoogle() {
       this.$auth.loginWith('google')
+    },
+    signinWithFacebook() {
+      this.$auth.loginWith('facebook')
     }
   }
 }
 </script>
-
-<style scoped>
-.light-bg {
-  background: linear-gradient(to bottom, #f9fafc, #eaeff5);
-}
-</style>

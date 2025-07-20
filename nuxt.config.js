@@ -32,20 +32,36 @@ export default {
       google: {
         clientId: process.env.GOOGLE_CLIENT_ID,
         redirectUri: process.env.GOOGLE_REDIRECT_URI,
-        scheme: "oauth2",
+        scheme: 'oauth2',
         endpoints: {
-          authorization: "https://accounts.google.com/o/oauth2/auth",
-          userInfo: "https://www.googleapis.com/oauth2/v3/userinfo",
+          authorization: 'https://accounts.google.com/o/oauth2/auth',
+          userInfo: 'https://www.googleapis.com/oauth2/v3/userinfo'
         },
         token: {
-          property: "access_token",
-          type: "Bearer",
-          maxAge: 1800,
+          property: 'access_token',
+          type: 'Bearer',
+          maxAge: 1800
         },
-        responseType: "token id_token",
-        scope: ["openid", "profile", "email"],
-        codeChallengeMethod: "",
+        responseType: 'token id_token',
+        scope: ['openid', 'profile', 'email'],
+        codeChallengeMethod: ''
       },
+      facebook: {
+        scheme: 'oauth2',
+        clientId: process.env.FACEBOOK_CLIENT_ID,
+        endpoints: {
+          authorization: 'https://www.facebook.com/v10.0/dialog/oauth',
+          userInfo: 'https://graph.facebook.com/me?fields=id,name,email,picture'
+        },
+        scope: ['public_profile', 'email'],
+        responseType: 'token',
+        token: {
+          property: 'access_token',
+          type: 'Bearer',
+          maxAge: 1800
+        },
+        redirectUri: 'https://finals-integ-4bta.vercel.app/auth/callback'
+      }
     }
   },
 
