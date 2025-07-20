@@ -60,7 +60,7 @@ export default {
           type: 'Bearer',
           maxAge: 1800
         },
-        redirectUri: 'https://finals-integ-4bta.vercel.app/auth/callback'
+        redirectUri: 'https://finals-integ-4bta.vercel.app/auth/facebook/callback'
       }
     }
   },
