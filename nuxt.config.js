@@ -11,7 +11,8 @@ export default {
   publicRuntimeConfig: {
     baseURL: process.env.BASE_URL || 'https://finals-integ-4bta.vercel.app',
     googleRedirectUri: process.env.GOOGLE_REDIRECT_URI,
-    removeBgApiKey: process.env.REMOVE_BG_API_KEY
+    removeBgApiKey: process.env.REMOVE_BG_API_KEY,
+    facebookRedirectUri: process.env.FACEBOOK_REDIRECT_URI
   },
 
   auth: {
@@ -49,6 +50,7 @@ export default {
       facebook: {
         scheme: 'oauth2',
         clientId: process.env.FACEBOOK_CLIENT_ID,
+        redirectUri: process.env.FACEBOOK_REDIRECT_URI, // Unified callback
         endpoints: {
           authorization: 'https://www.facebook.com/v10.0/dialog/oauth',
           userInfo: 'https://graph.facebook.com/me?fields=id,name,email,picture'
@@ -59,8 +61,7 @@ export default {
           property: 'access_token',
           type: 'Bearer',
           maxAge: 1800
-        },
-        redirectUri: 'https://finals-integ-4bta.vercel.app/auth/facebook/callback'
+        }
       }
     }
   },
