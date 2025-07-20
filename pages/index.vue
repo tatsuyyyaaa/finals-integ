@@ -1,14 +1,12 @@
 <template>
   <v-container fluid class="light-bg py-12">
-    <v-card class="mx-auto pa-8 rounded-xl" max-width="840" elevation="6">
+    <v-card class="mx-auto pa-10 rounded-2xl elevation-10 shadow-lg" max-width="860">
       <!-- Title -->
       <v-card-title class="justify-center">
         <div class="text-center w-100">
-          <v-icon size="42" color="primary">mdi-image-remove</v-icon>
-          <h2 class="font-weight-bold mt-2 mb-1">Background Remover Tool</h2>
-          <p class="text-subtitle-2 grey--text">
-            Upload your image and remove the background instantly
-          </p>
+          <v-icon size="48" color="primary">mdi-image-remove</v-icon>
+          <h2 class="font-weight-bold mt-3 mb-1 display-1">Remove Background</h2>
+          <p class="text-subtitle-1 grey--text">Upload your image and let AI handle the rest</p>
         </div>
       </v-card-title>
 
@@ -18,7 +16,7 @@
         <v-file-input
           v-model="imageFile"
           accept="image/*"
-          label="Upload an image"
+          label="Choose an image to upload"
           prepend-icon="mdi-upload"
           :disabled="loading"
           @change="processImage"
@@ -26,52 +24,54 @@
           outlined
           rounded
           dense
-          class="mb-6"
+          class="mb-8"
         />
 
-        <!-- Loading Indicator -->
+        <!-- Progress Indicator -->
         <v-progress-linear
           v-if="loading"
           indeterminate
           color="primary"
-          class="mb-4"
+          height="6"
+          class="mb-6"
         />
 
         <!-- Image Comparison -->
-        <v-row v-if="originalImageUrl || resultImage" class="my-6" dense>
+        <v-row v-if="originalImageUrl || resultImage" class="my-6 d-flex" align="center" justify="center">
           <v-col cols="12" md="6">
-            <h4 class="subtitle-1 font-weight-bold mb-2 text-center">Original Image</h4>
-            <v-img
-              v-if="originalImageUrl"
-              :src="originalImageUrl"
-              class="rounded-lg elevation-2"
-              max-height="300"
-              contain
-            />
+            <div class="text-center">
+              <h4 class="subtitle-1 font-weight-medium mb-2">Original</h4>
+              <v-img
+                :src="originalImageUrl"
+                class="rounded-xl elevation-3"
+                max-height="320"
+                contain
+              />
+            </div>
           </v-col>
 
           <v-col cols="12" md="6">
-            <h4 class="subtitle-1 font-weight-bold mb-2 text-center">No Background</h4>
-            <v-img
-              v-if="resultImage"
-              :src="resultImage"
-              class="rounded-lg elevation-2"
-              max-height="300"
-              contain
-            />
+            <div class="text-center">
+              <h4 class="subtitle-1 font-weight-medium mb-2">Without Background</h4>
+              <v-img
+                :src="resultImage"
+                class="rounded-xl elevation-3"
+                max-height="320"
+                contain
+              />
+            </div>
           </v-col>
         </v-row>
 
         <!-- Action Buttons -->
-        <div v-if="resultImage" class="text-center mt-4">
+        <div v-if="resultImage" class="text-center mt-6">
           <v-btn
             color="primary"
-            class="mx-2"
+            class="mx-2 px-6 py-3"
             @click="downloadImage"
             :loading="loading"
-            depressed
+            elevation="3"
             rounded
-            elevation="2"
           >
             <v-icon left>mdi-download</v-icon>
             Download
@@ -79,12 +79,11 @@
 
           <v-btn
             color="grey lighten-1"
-            class="mx-2"
+            class="mx-2 px-6 py-3"
             @click="reset"
             :disabled="loading"
-            depressed
+            elevation="3"
             rounded
-            elevation="2"
           >
             <v-icon left>mdi-refresh</v-icon>
             Try Another
@@ -92,7 +91,7 @@
         </div>
 
         <!-- Error Alert -->
-        <v-alert v-if="error" type="error" class="mt-4" dismissible>
+        <v-alert v-if="error" type="error" class="mt-6" dismissible>
           {{ error }}
         </v-alert>
       </v-card-text>
@@ -104,6 +103,8 @@
 import axios from 'axios'
 
 export default {
+  middleware: 'auth',
+
   data: () => ({
     imageFile: null,
     originalImageUrl: null,
@@ -168,7 +169,7 @@ export default {
 
 <style scoped>
 .light-bg {
-  background: linear-gradient(to bottom, #f6f9fc, #ffffff);
+  background: linear-gradient(to bottom right, #f5f9ff, #ffffff);
 }
 .v-card-title h2 {
   font-family: 'Segoe UI', sans-serif;

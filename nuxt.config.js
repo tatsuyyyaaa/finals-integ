@@ -11,8 +11,8 @@ export default {
   publicRuntimeConfig: {
     baseURL: process.env.BASE_URL || 'https://finals-integ-4bta.vercel.app',
     googleRedirectUri: process.env.GOOGLE_REDIRECT_URI,
-    removeBgApiKey: process.env.REMOVE_BG_API_KEY,
-    facebookRedirectUri: process.env.FACEBOOK_REDIRECT_URI
+    facebookRedirectUri: process.env.FACEBOOK_REDIRECT_URI,
+    removeBgApiKey: process.env.REMOVE_BG_API_KEY
   },
 
   auth: {
@@ -50,7 +50,7 @@ export default {
       facebook: {
         scheme: 'oauth2',
         clientId: process.env.FACEBOOK_CLIENT_ID,
-        redirectUri: process.env.FACEBOOK_REDIRECT_URI, // Unified callback
+        redirectUri: process.env.FACEBOOK_REDIRECT_URI,
         endpoints: {
           authorization: 'https://www.facebook.com/v10.0/dialog/oauth',
           userInfo: 'https://graph.facebook.com/me?fields=id,name,email,picture'
@@ -91,13 +91,14 @@ export default {
     ]
   },
 
-  css: [],
+  css: [
+    'vue-toastification/dist/index.css'
+  ],
 
   plugins: [
-    {
-      src: '~/plugins/removeBgApi.client.js',
-      mode: 'client'
-    }
+    { src: '~/plugins/removeBgApi.client.js', mode: 'client' },
+    { src: '~/plugins/firebase.js', mode: 'client' },
+    { src: '~/plugins/toast.client.js', mode: 'client' }
   ],
 
   components: true,
@@ -132,7 +133,15 @@ export default {
   },
 
   build: {
-    transpile: ['vuetify'],
+    transpile: [
+      'vuetify',
+      'firebase',
+      '@firebase/app',
+      '@firebase/auth',
+      '@firebase/util',
+      '@firebase/logger',
+      '@firebase/component'
+    ],
     postcss: {
       postcssOptions: {
         plugins: {
