@@ -51,12 +51,13 @@
             Login
           </v-btn>
 
-          <!-- Register / Forgot Password Links -->
-          <div class="d-flex justify-space-between mb-6">
-            <nuxt-link to="/auth/forgot-password" class="text-caption blue--text text--darken-2">
-              Forgot Password?
-            </nuxt-link>
-            <a href="#" class="text-caption blue--text text--darken-2" @click.prevent="signupWithAuth0">
+          <!-- Register Link Only -->
+          <div class="d-flex justify-end mb-6">
+            <a
+              href="#"
+              class="text-caption blue--text text--darken-2"
+              @click.prevent="signupWithAuth0"
+            >
               Register
             </a>
           </div>
@@ -93,15 +94,15 @@ export default {
       email: '',
       password: '',
       showPassword: false,
-      loading: false
+      loading: false,
+      auth0Domain: this.$config.auth0Domain,
+      auth0ClientId: this.$config.auth0ClientId
     }
   },
   methods: {
-    // Inform user that email/password login is handled by Auth0
     async login() {
       this.$toast.info('Email/password login is handled by Auth0. Please use Register or social login.')
     },
-    // Redirect to Auth0's hosted sign-up page
     signupWithAuth0() {
       this.$auth.loginWith('auth0', {
         params: {
@@ -109,7 +110,6 @@ export default {
         }
       })
     },
-    // Social login methods remain unchanged
     signinWithGoogle() {
       this.$auth.loginWith('google')
     },
