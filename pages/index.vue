@@ -100,6 +100,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   middleware: 'auth',
 
@@ -113,72 +115,56 @@ export default {
 
   methods: {
     async processImage(file) {
-      if (!file) return;
+      if (!file) return
 
-      this.loading = true;
-      this.error = null;
-      this.originalImageUrl = URL.createObjectURL(file);
+      this.loading = true
+      this.error = null
+      this.originalImageUrl = URL.createObjectURL(file)
+
+      const formData = new FormData()
+      formData.append('image_file', file)
+      formData.append('size', 'auto')
 
       try {
-        const base64 = await this.toBase64(file);
+        const response = await axios.post(
+          'https://api.remove.bg/v1.0/removebg',
+          formData,
+          {
+            headers: {
+              'X-Api-Key': 'Y3TpFeYXFZtVt4m6hfzBHPVS', // Replace with your API key
+              'Content-Type': 'multipart/form-data'
+            },
+            responseType: 'blob'
+          }
+        )
 
-        const response = await fetch('https://hf.space/embed/Charon/Background-Removal/+/api/predict', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ data: [base64] })
-        });
-
-        const result = await response.json();
-
-        if (result?.data?.[0]) {
-          this.resultImage = this.base64ToBlobUrl(result.data[0]);
-        } else {
-          throw new Error('Background removal failed');
-        }
+        this.resultImage = URL.createObjectURL(response.data)
       } catch (err) {
-        this.error = err.message || 'An error occurred';
-        console.error('[Rembg Error]', err);
+        this.error =
+          err.response?.data?.errors?.[0]?.title ||
+          err.response?.data?.message ||
+          err.message
+        console.error('[Remove.bg Error]', err)
       } finally {
-        this.loading = false;
+        this.loading = false
       }
     },
 
-    toBase64(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
-    },
-
-    base64ToBlobUrl(base64) {
-      const byteString = atob(base64.split(',')[1]);
-      const mimeString = base64.split(',')[0].split(':')[1].split(';')[0];
-      const ab = new ArrayBuffer(byteString.length);
-      const ia = new Uint8Array(ab);
-      for (let i = 0; i < byteString.length; i++) ia[i] = byteString.charCodeAt(i);
-      const blob = new Blob([ab], { type: mimeString });
-      return URL.createObjectURL(blob);
-    },
-
     downloadImage() {
-      const link = document.createElement('a');
-      link.href = this.resultImage;
-      link.download = `no-bg-${Date.now()}.png`;
-      link.click();
+      const link = document.createElement('a')
+      link.href = this.resultImage
+      link.download = `no-bg-${Date.now()}.png`
+      link.click()
     },
 
     reset() {
-      this.imageFile = null;
-      this.originalImageUrl = null;
-      this.resultImage = null;
-      this.error = null;
+      this.imageFile = null
+      this.originalImageUrl = null
+      this.resultImage = null
+      this.error = null
     }
   }
-};
+}
 </script>
 
 <style scoped>
