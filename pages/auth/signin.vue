@@ -97,12 +97,11 @@ export default {
     }
   },
   methods: {
-    // Email login is UI-only since handled by Auth0 externally
+    // Inform user that email/password login is handled by Auth0
     async login() {
-      this.$toast.info('Email/password login is handled by Auth0. Please use social login.')
-      // Optionally trigger Auth0 login here:
-      // this.$auth.loginWith('auth0')
+      this.$toast.info('Email/password login is handled by Auth0. Please use Register or social login.')
     },
+    // Redirect to Auth0's hosted sign-up page
     signupWithAuth0() {
       this.$auth.loginWith('auth0', {
         params: {
@@ -110,6 +109,7 @@ export default {
         }
       })
     },
+    // Social login methods remain unchanged
     signinWithGoogle() {
       this.$auth.loginWith('google')
     },

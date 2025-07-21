@@ -31,6 +31,7 @@ export default {
         domain: '.vercel.app'
       }
     },
+    autoFetchUser: false,
     strategies: {
       auth0: {
         domain: process.env.AUTH0_DOMAIN,
@@ -54,7 +55,8 @@ export default {
           maxAge: 1800
         },
         responseType: 'token id_token',
-        scope: ['openid', 'profile', 'email']
+        scope: ['openid', 'profile', 'email'],
+        codeChallengeMethod: "",
       },
       facebook: {
         scheme: 'oauth2',
