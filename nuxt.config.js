@@ -10,7 +10,7 @@ export default {
 
   publicRuntimeConfig: {
     baseURL: process.env.BASE_URL || 'https://finals-integ-4bta.vercel.app',
-    removeBgApiKey: process.env.REMOVE_BG_API_KEY,
+    removeBgApiKey: process.env.SLAZZER_API_KEY,
     auth0Domain: process.env.AUTH0_DOMAIN,
     auth0ClientId: process.env.AUTH0_CLIENT_ID,
     auth0Callback: process.env.AUTH0_CALLBACK_URL,

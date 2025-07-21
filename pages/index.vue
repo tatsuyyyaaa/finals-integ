@@ -122,16 +122,16 @@ export default {
       this.originalImageUrl = URL.createObjectURL(file)
 
       const formData = new FormData()
-      formData.append('image_file', file)
-      formData.append('size', 'auto')
+      formData.append('source_image_file', file)
+      formData.append('crop', 'true')
 
       try {
         const response = await axios.post(
-          'https://api.remove.bg/v1.0/removebg',
+          'https://api.slazzer.com/v2.0/remove_image_background',
           formData,
           {
             headers: {
-              'X-Api-Key': 'P4At48TEFkGFNsTwKozJF6Q1', // Replace with your API key
+              'API-KEY': '1c0d6c0a5d2e407e8c5bcfb33019e4e6', // ✅ Your Slazzer API Key
               'Content-Type': 'multipart/form-data'
             },
             responseType: 'blob'
@@ -141,10 +141,8 @@ export default {
         this.resultImage = URL.createObjectURL(response.data)
       } catch (err) {
         this.error =
-          err.response?.data?.errors?.[0]?.title ||
-          err.response?.data?.message ||
-          err.message
-        console.error('[Remove.bg Error]', err)
+          err.response?.data?.error || err.message || 'Unknown error'
+        console.error('[Slazzer Error]', err)
       } finally {
         this.loading = false
       }

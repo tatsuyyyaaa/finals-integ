@@ -65,12 +65,29 @@ export default {
       this.loading = true;
       this.error = null;
 
+      const formData = new FormData();
+      formData.append('source_image_file', file);
+      formData.append('crop', 'true'); // Optional: adjust or remove if you want full image
+
       try {
-        // Call the working plugin method (uses Remove.bg API)
-        this.result = await this.$removeBg(file);
+        const response = await fetch('https://api.slazzer.com/v2.0/remove_image_background', {
+          method: 'POST',
+          headers: {
+            'API-KEY': '1c0d6c0a5d2e407e8c5bcfb33019e4e6'
+          },
+          body: formData
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(errorText || 'Failed to remove background');
+        }
+
+        const blob = await response.blob();
+        this.result = URL.createObjectURL(blob);
       } catch (err) {
-        this.error = err.message || 'Failed to remove background';
-        console.error('Background Removal Error:', err);
+        this.error = err.message || 'An error occurred';
+        console.error('Slazzer Error:', err);
       } finally {
         this.loading = false;
       }
