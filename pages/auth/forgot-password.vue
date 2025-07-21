@@ -38,9 +38,6 @@
 </template>
 
 <script>
-import { auth } from '~/plugins/firebase'
-import { sendPasswordResetEmail } from 'firebase/auth'
-
 export default {
   layout: 'auth',
   data() {
@@ -51,18 +48,35 @@ export default {
   },
   methods: {
     async sendResetLink() {
+      if (!this.email) {
+        this.$toast.error('Please enter your email address.')
+        return
+      }
+
       this.loading = true
+
       try {
-        await sendPasswordResetEmail(auth, this.email)
-        this.$toast.success('Reset link sent successfully! Please check your email.')
-      } catch (error) {
-        if (error.code === 'auth/user-not-found') {
-          this.$toast.error('No user found with this email.')
-        } else if (error.code === 'auth/invalid-email') {
-          this.$toast.error('Invalid email address.')
+        const response = await fetch(`https://${process.env.AUTH0_DOMAIN}/dbconnections/change_password`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            client_id: process.env.AUTH0_CLIENT_ID,
+            email: this.email,
+            connection: 'Username-Password-Authentication'
+          })
+        })
+
+        const result = await response.text()
+
+        if (response.ok) {
+          this.$toast.success('Reset email sent. Please check your inbox.')
         } else {
-          this.$toast.error(error.message || 'Failed to send reset link.')
+          this.$toast.error(result || 'Failed to send reset email.')
         }
+      } catch (error) {
+        this.$toast.error('An error occurred. Please try again.')
       } finally {
         this.loading = false
       }

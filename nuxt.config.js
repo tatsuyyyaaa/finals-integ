@@ -10,9 +10,12 @@ export default {
 
   publicRuntimeConfig: {
     baseURL: process.env.BASE_URL || 'https://finals-integ-4bta.vercel.app',
+    removeBgApiKey: process.env.REMOVE_BG_API_KEY,
+    auth0Domain: process.env.AUTH0_DOMAIN,
+    auth0ClientId: process.env.AUTH0_CLIENT_ID,
+    auth0Callback: process.env.AUTH0_CALLBACK_URL,
     googleRedirectUri: process.env.GOOGLE_REDIRECT_URI,
-    facebookRedirectUri: process.env.FACEBOOK_REDIRECT_URI,
-    removeBgApiKey: process.env.REMOVE_BG_API_KEY
+    facebookRedirectUri: process.env.FACEBOOK_REDIRECT_URI
   },
 
   auth: {
@@ -28,12 +31,19 @@ export default {
         domain: '.vercel.app'
       }
     },
-    autoFetchUser: true,
     strategies: {
+      auth0: {
+        domain: process.env.AUTH0_DOMAIN,
+        clientId: process.env.AUTH0_CLIENT_ID,
+        redirectUri: process.env.AUTH0_CALLBACK_URL,
+        audience: '', // Optional: only if you enabled API access
+        logoutRedirectUri: process.env.BASE_URL,
+        scope: ['openid', 'profile', 'email']
+      },
       google: {
+        scheme: 'oauth2',
         clientId: process.env.GOOGLE_CLIENT_ID,
         redirectUri: process.env.GOOGLE_REDIRECT_URI,
-        scheme: 'oauth2',
         endpoints: {
           authorization: 'https://accounts.google.com/o/oauth2/auth',
           userInfo: 'https://www.googleapis.com/oauth2/v3/userinfo'
@@ -44,8 +54,7 @@ export default {
           maxAge: 1800
         },
         responseType: 'token id_token',
-        scope: ['openid', 'profile', 'email'],
-        codeChallengeMethod: ''
+        scope: ['openid', 'profile', 'email']
       },
       facebook: {
         scheme: 'oauth2',
@@ -91,13 +100,10 @@ export default {
     ]
   },
 
-  css: [
-    'vue-toastification/dist/index.css'
-  ],
+  css: ['vue-toastification/dist/index.css'],
 
   plugins: [
     { src: '~/plugins/removeBgApi.client.js', mode: 'client' },
-    { src: '~/plugins/firebase.js', mode: 'client' },
     { src: '~/plugins/toast.client.js', mode: 'client' }
   ],
 
@@ -133,15 +139,7 @@ export default {
   },
 
   build: {
-    transpile: [
-      'vuetify',
-      'firebase',
-      '@firebase/app',
-      '@firebase/auth',
-      '@firebase/util',
-      '@firebase/logger',
-      '@firebase/component'
-    ],
+    transpile: ['vuetify'],
     postcss: {
       postcssOptions: {
         plugins: {
